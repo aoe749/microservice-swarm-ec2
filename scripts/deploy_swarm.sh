@@ -75,10 +75,10 @@ echo "${join_wrk}"
 
 # Connecting manager nodes to SWARM
 echo "Connecting SWARM managers"
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_1} docker swarm leave -f
+# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_1} docker swarm leave -f
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_1} ${join_mng}
 
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_2} docker swarm leave -f
+# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_2} docker swarm leave -f
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_2} ${join_mng}
 
 # Connecting workers nodes to SWARM
@@ -89,19 +89,19 @@ ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} sudo hostnam
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} sudo hostnamectl set-hostname worker-2
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} sudo hostnamectl set-hostname worker-3
 
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} docker swarm leave -f
+# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} docker swarm leave -f
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} ${join_wrk}
 
 echo "1st ready"
 #################
 
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} docker swarm leave -f
+# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} docker swarm leave -f
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} ${join_wrk}
 
 echo "2nd ready"
 #################
 
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} docker swarm leave -f
+# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} docker swarm leave -f
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_4} ${join_wrk}
 
 echo "3rd ready"
