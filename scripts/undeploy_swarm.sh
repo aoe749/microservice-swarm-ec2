@@ -63,50 +63,19 @@ echo "Worker3 public ip: ${worker_3}"
 ############################################################
 ### Create SWARM, get join token and pass
 ############################################################
-# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker swarm leave -f
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker swarm init
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker network create -d overlay --attachable swarm_net
 
-join_mng=$(ssh -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem ec2-user@${swarm_master} docker swarm join-token manager | grep docker)
-join_wrk=$(ssh -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem ec2-user@${swarm_master} docker swarm join-token worker | grep docker)
 
-echo "${join_mng}"
-echo "${join_wrk}"
+ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_1} docker swarm leave -f
 
-# Connecting manager nodes to SWARM
-echo "Connecting SWARM managers"
-# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_1} docker swarm leave -f
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_1} ${join_mng}
+ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_2} docker swarm leave -f
 
-# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_2} docker swarm leave -f
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_manager_2} ${join_mng}
+ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} docker swarm leave -f
 
-# Connecting workers nodes to SWARM
+ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} docker swarm leave -f
 
-echo "Connecting SWARM Workers"
-echo "Setting hostnames"
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} sudo hostnamectl set-hostname worker-1
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} sudo hostnamectl set-hostname worker-2
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} sudo hostnamectl set-hostname worker-3
+ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} docker swarm leave -f
 
-# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} docker swarm leave -f
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_1} ${join_wrk}
-
-echo "1st ready"
-#################
-
-# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} docker swarm leave -f
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_2} ${join_wrk}
-
-echo "2nd ready"
-#################
-
-# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} docker swarm leave -f
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${worker_3} ${join_wrk}
-
-echo "3rd ready"
-echo "#################"
-
+ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker swarm leave -f
 # ssh -oStrictHostKeyChecking=no -T \
 #   -i ~/.ssh/jenkins-Frankfurt.pem ec2-user@${worker_4} << EOSSH
 # sudo hostnamectl set-hostname worker-4
@@ -149,10 +118,10 @@ echo "#################"
 #############################################################
 # aws s3 cp
 #
-scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/consul/config.json.s ec2-user@${swarm_master}:consul/config/config.json
-scp -oStrictHostKeyChecking=no -T -i ${pr_key} compose/docker-full.yml ec2-user@${swarm_master}:/home/ec2-user
-scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s1 ec2-user@${swarm_manager_1}:consul/config/config.json
-scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s2 ec2-user@${swarm_manager_2}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/consul/config.json.s ec2-user@${swarm_master}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ${pr_key} compose/docker-full.yml ec2-user@${swarm_master}:/home/ec2-user
+# scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s1 ec2-user@${swarm_manager_1}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s2 ec2-user@${swarm_manager_2}:consul/config/config.json
 
 # scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a1 ec2-user@${worker_1}:consul/config/config.json
 # scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a2 ec2-user@${worker_2}:consul/config/config.json
