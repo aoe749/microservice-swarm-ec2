@@ -149,14 +149,14 @@ echo "#################"
 #############################################################
 # aws s3 cp
 #
-scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/consul/config.json.s ec2-user@${swarm_master}:consul/config/config.json
+scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s ec2-user@${swarm_master}:consul/config/config.json
 scp -oStrictHostKeyChecking=no -T -i ${pr_key} compose/docker-full.yml ec2-user@${swarm_master}:/home/ec2-user
 scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s1 ec2-user@${swarm_manager_1}:consul/config/config.json
 scp -oStrictHostKeyChecking=no -T -i ${pr_key} consul/config.json.s2 ec2-user@${swarm_manager_2}:consul/config/config.json
 
-# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a1 ec2-user@${worker_1}:consul/config/config.json
-# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a2 ec2-user@${worker_2}:consul/config/config.json
-# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a3 ec2-user@${worker_3}:consul/config/config.json
-# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a4 ec2-user@${worker_4}:consul/config/config.json
-# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a5 ec2-user@${worker_5}:consul/config/config.json
-# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem scripts/consul/config.json.a6 ec2-user@${worker_6}:consul/config/config.json./de
+# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem consul/config.json.a1 ec2-user@${worker_1}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem consul/config.json.a2 ec2-user@${worker_2}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem consul/config.json.a3 ec2-user@${worker_3}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem consul/config.json.a4 ec2-user@${worker_4}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem consul/config.json.a5 ec2-user@${worker_5}:consul/config/config.json
+# scp -oStrictHostKeyChecking=no -T -i ~/.ssh/jenkins-Frankfurt.pem consul/config.json.a6 ec2-user@${worker_6}:consul/config/config.json./de
