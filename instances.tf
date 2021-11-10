@@ -135,9 +135,9 @@ resource "aws_instance" "worker" {
   }
 }
 
-# locals {
-#   worker = tolist([
-#     for server in aws_instance.worker :
-#     server.private_ip
-#   ])
-# }
+locals {
+  worker = tolist([
+    for server in aws_instance.worker :
+    server.private_ip
+  ])
+}

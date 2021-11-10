@@ -12,16 +12,16 @@ resource "aws_vpc" "swarm" {
   }
 }
 
-# resource "aws_vpc_dhcp_options" "swarm" {
-#   domain_name         = "swarm.local"
-#   domain_name_servers = ["AmazonProvidedDNS"]
-#
-#   tags = {
-#     Name = "DHCP"
-#   }
-# }
-#
-# resource "aws_vpc_dhcp_options_association" "swarm_resolver" {
-#   vpc_id          = aws_vpc.swarm.id
-#   dhcp_options_id = aws_vpc_dhcp_options.swarm.id
-# }
+resource "aws_vpc_dhcp_options" "swarm" {
+  domain_name         = "swarm.local"
+  domain_name_servers = ["AmazonProvidedDNS"]
+
+  tags = {
+    Name = "DHCP"
+  }
+}
+
+resource "aws_vpc_dhcp_options_association" "swarm_resolver" {
+  vpc_id          = aws_vpc.swarm.id
+  dhcp_options_id = aws_vpc_dhcp_options.swarm.id
+}
