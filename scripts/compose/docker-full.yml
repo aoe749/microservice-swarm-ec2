@@ -49,9 +49,10 @@ services:
     image: "public.ecr.aws/i5u6z9n7/epam_practice:service-one"
     ports:
       - "8082:8082"
-    placement:
-     constraint:
-       - "node==worker-1"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == worker-1
     depends_on:
       - rabbit
       - service-one-db
@@ -139,12 +140,12 @@ services:
   # Service One Database
   # ---------------------------
   service-one-db:
-    container_name: "service-one-db"
     hostname: "service-one-db"
     image: "mongo:3.7"
-    placement:
-       constraint:
-         - "node==worker-1"
+    deploy:
+      placement:
+        constraints:
+         - node.hostname == worker-2
     environment:
       - MONGODB_USER="service-one"
       - MONGODB_PASS="service-one"
@@ -182,9 +183,10 @@ services:
   rabbit:
     image: rabbitmq:3.9-management
     hostname: "rabbitmq"
-    placement:
-       constraint:
-         - "node==worker-3"
+    deploy:
+      placement:
+        constraints:
+          - node.hostname == worker-3
     ports:
       - "5672:5672"
       - "15672:15672"
