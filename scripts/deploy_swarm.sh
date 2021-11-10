@@ -63,7 +63,7 @@ echo "Worker3 public ip: ${worker_3}"
 ############################################################
 ### Create SWARM, get join token and pass
 ############################################################
-ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker swarm leave -f
+# ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker swarm leave -f
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker swarm init
 ssh -oStrictHostKeyChecking=no -T -i ${pr_key} ec2-user@${swarm_master} docker network create -d overlay --attachable swarm_net
 
