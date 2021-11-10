@@ -9,7 +9,7 @@ resource "aws_instance" "master" {
 
   connection {
     user        = "ec2-user"
-    private_key = file("$HOME/.ssh/jenkins-Frankfurt.pem")
+    private_key = file("/home/ubuntu/.ssh/jenkins-Frankfurt.pem")
     timeout     = var.connection_timeout
     host        = aws_instance.master.public_ip
   }
@@ -41,7 +41,7 @@ resource "aws_instance" "manager1" {
 
   connection {
     user        = "ec2-user"
-    private_key = file("$HOME/.ssh/jenkins-Frankfurt.pem")
+    private_key = file("/home/ubuntu/.ssh/jenkins-Frankfurt.pem")
     timeout     = var.connection_timeout
     host        = aws_instance.manager1.public_ip
   }
@@ -75,7 +75,7 @@ resource "aws_instance" "manager2" {
 
   connection {
     user        = "ec2-user"
-    private_key = file("$HOME/.ssh/jenkins-Frankfurt.pem")
+    private_key = file("/home/ubuntu/.ssh/jenkins-Frankfurt.pem")
     timeout     = var.connection_timeout
     host        = aws_instance.manager2.public_ip
   }
@@ -112,7 +112,7 @@ resource "aws_instance" "worker" {
 
   connection {
     user        = "ec2-user"
-    private_key = file("$HOME/.ssh/jenkins-Frankfurt.pem")
+    private_key = file("/home/ubuntu/.ssh/jenkins-Frankfurt.pem")
     timeout     = var.connection_timeout
     host        = self.public_ip
 
