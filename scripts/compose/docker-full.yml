@@ -1,0 +1,190 @@
+version: '3.3'
+networks:
+  swarm_net:
+    external: true
+services:
+  # ---------------------------
+  # API Gateway
+  # ---------------------------
+  api-gateway:
+    container_name: "api-gateway"
+    hostname: "api-gateway"
+    image: "public.ecr.aws/i5u6z9n7/epam_practice:api-gateway"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - consul
+     # - logstash
+    # environment:
+    #   - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - swarm_net
+
+  # ---------------------------
+  # Web Application
+  # ---------------------------
+  web-application:
+    container_name: web-application
+    image: public.ecr.aws/i5u6z9n7/epam_practice:web-application
+    ports:
+      - "80:4200"
+    networks:
+      - swarm_net
+
+  # ---------------------------
+  # Service One
+  # ---------------------------
+  service-one:
+    container_name: "service-one"
+    hostname: "service-One"
+    image: "public.ecr.aws/i5u6z9n7/epam_practice:service-one"
+    ports:
+      - "8082:8082"
+    depends_on:
+      - rabbit
+      - service-one-db
+      - consul
+     # - logstash
+    # environment:
+    #   - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - swarm_net
+
+  # ---------------------------
+  # Service Two
+  # ---------------------------
+  service-two:
+    container_name: "service-two"
+    hostname: "service-Two"
+    image: "public.ecr.aws/i5u6z9n7/epam_practice:service-two"
+    ports:
+      - "8084:8084"
+    depends_on:
+      - rabbit
+      - service-two-db
+      - consul
+     # - logstash
+    # environment:
+    #   - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - swarm_net
+
+
+  # Deploy the consul server instances
+  consul:
+    image: consul:latest
+    hostname: "consul-server"
+    networks:
+      swarm_net:
+    # Start the consul server with the given configuration
+    command: "consul agent -config-file /consul/config/config.json"
+    # Expose port 8500 so we can access the UI and allow connections across datacenters.
+    ports:
+      - target: 8500
+        published: 8500
+        mode: host
+    # Mount the configuration and data volumes to the container.
+    volumes:
+      - /home/ec2-user/consul/config:/consul/config
+      - /home/ec2-user/consul/data:/consul/data
+    # Deploy the consul server on all servers which are managers.
+    # Use DNS Round Robin instead VIP for discovery. This ensures we get all running
+    # consul server instances when querying consul.server
+    deploy:
+      mode: global
+      endpoint_mode: vip
+      update_config:
+        parallelism: 1
+        failure_action: rollback
+        delay: 30s
+      restart_policy:
+        condition: any
+        delay: 5s
+        window: 120s
+      placement:
+        constraints:
+          - node.role == manager
+
+
+
+  # -----------------------------
+  viz:
+    image: dockersamples/visualizer
+    deploy:
+      replicas: 1
+      placement:
+        constraints: [node.role == manager]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 4040:8080
+    networks:
+      swarm_net:
+  # ---------------------------
+  # Service One Database
+  # ---------------------------
+  service-one-db:
+    container_name: "service-one-db"
+    hostname: "service-one-db"
+    image: "mongo:3.7"
+    environment:
+      - MONGODB_USER="service-one"
+      - MONGODB_PASS="service-one"
+      - MONGO_DATA_DIR=/data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017:27017"
+    command: mongod --smallfiles
+    #--logpath=/dev/null --sslDisabledProtocols 'none'
+    networks:
+      swarm_net:
+
+  # ---------------------------
+  # Service Two Database
+  # ---------------------------
+  service-two-db:
+    container_name: "service-two-db"
+    hostname: "service-two-db"
+    image: "mysql/mysql-server:5.7"
+    environment:
+      - MYSQL_ROOT_PASSWORD=epam_mysql
+      - MYSQL_DATABASE=service-two
+      - MYSQL_USER=service-two
+      - MYSQL_PASSWORD=service-two
+    ports:
+      - "3310:3306"
+    networks:
+      swarm_net:
+
+  rabbit:
+    image: rabbitmq:3.9-management
+    hostname: "rabbitmq"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - CLUSTERED=true
+      - RAM_NODE=true
+      - CLUSTER_WITH=rabbit
+      - RABBITMQ_DEFAULT_USER=epam_rabbit
+      - RABBITMQ_DEFAULT_PASS=epam_rabbit
+    networks:
+      swarm_net:
+
+  scope:
+    image: weaveworks/scope:latest
+    network_mode: "host"
+    pid: "host"
+    privileged: true
+    ports:
+      - "4050:4040"
+    labels:
+      - "works.weave.role=system"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+    command:
+      - "--probe.docker=true"
+volumes:
+  mongodata:
