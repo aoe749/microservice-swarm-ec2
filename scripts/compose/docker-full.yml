@@ -46,7 +46,7 @@ services:
   service-one:
     container_name: "service-one"
     hostname: "service-One"
-    image: "public.ecr.aws/i5u6z9n7/epam_practice:service-one"
+    image: "public.ecr.aws/i5u6z9n7/ms-1:latest"
     ports:
       - "8082:8082"
     deploy:
